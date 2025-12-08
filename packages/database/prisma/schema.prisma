@@ -1,0 +1,586 @@
+// ============================================================
+// VISUCAN DATABASE SCHEMA
+// PostgreSQL with Prisma ORM
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// USER & AUTHENTICATION
+// ============================================================
+
+model User {
+  id                   String   @id @default(cuid())
+  email                String   @unique
+  passwordHash         String
+  name                 String
+  avatarUrl            String?
+  role                 UserRole @default(USER)
+  subscription         SubscriptionTier @default(LITE)
+  stripeCustomerId     String?  @unique
+  stripeSubscriptionId String?
+  emailVerified        Boolean  @default(false)
+  emailVerifyToken     String?
+  passwordResetToken   String?
+  passwordResetExpires DateTime?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  // Relations
+  sessions            Session[]
+  projects            Project[]
+  chatSessions        ChatSession[]
+  pcbOrders           PCBOrder[]
+  quoteConfirmations  QuoteConfirmation[]
+  marketplaceListings MarketplaceListing[]
+  marketplaceOrders   MarketplaceOrder[] @relation("BuyerOrders")
+  sellerOrders        MarketplaceOrder[] @relation("SellerOrders")
+  reviews             MarketplaceReview[]
+  payouts             SellerPayout[]
+  notifications       Notification[]
+
+  @@index([email])
+  @@index([stripeCustomerId])
+}
+
+enum UserRole {
+  USER
+  SELLER
+  ADMIN
+}
+
+enum SubscriptionTier {
+  LITE
+  PRO
+  ENTERPRISE
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+}
+
+// ============================================================
+// PROJECT & DESIGN
+// ============================================================
+
+model Project {
+  id          String        @id @default(cuid())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  status      ProjectStatus @default(DRAFT)
+
+  // Board specifications
+  boardWidth  Float   @default(50)  // mm
+  boardHeight Float   @default(50)  // mm
+  layerCount  Int     @default(2)
+
+  // Timestamps
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  lastOpenedAt DateTime?
+
+  // Relations
+  versions           ProjectVersion[]
+  blockDiagram       BlockDiagram?
+  schematic          Schematic?
+  pcbLayout          PCBLayout?
+  logoPlacement      LogoPlacement?
+  bomItems           BOMItem[]
+  chatSessions       ChatSession[]
+  quoteConfirmations QuoteConfirmation[]
+  quotes             PCBQuote[]
+  orders             PCBOrder[]
+  reports            DraftsmanReport[]
+  marketplaceListings MarketplaceListing[]
+
+  @@index([userId])
+  @@index([status])
+}
+
+enum ProjectStatus {
+  DRAFT
+  IN_PROGRESS
+  COMPLETED
+  ARCHIVED
+}
+
+model ProjectVersion {
+  id            String   @id @default(cuid())
+  projectId     String
+  project       Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  version       Int
+  description   String?
+  schematicData Json?
+  pcbData       Json?
+  bomData       Json?
+  createdAt     DateTime @default(now())
+
+  @@unique([projectId, version])
+  @@index([projectId])
+}
+
+// ============================================================
+// BLOCK DIAGRAM
+// ============================================================
+
+model BlockDiagram {
+  id          String   @id @default(cuid())
+  projectId   String   @unique
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  blocks      Json     @default("[]")
+  connections Json     @default("[]")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ============================================================
+// SCHEMATIC
+// ============================================================
+
+model Schematic {
+  id          String   @id @default(cuid())
+  projectId   String   @unique
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  data        Json     @default("{}")
+  sheets      Json     @default("[]")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ============================================================
+// PCB LAYOUT
+// ============================================================
+
+model PCBLayout {
+  id         String   @id @default(cuid())
+  projectId  String   @unique
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  data       Json     @default("{}")
+  layerStack Json     @default("{}")
+  drcResults Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ============================================================
+// LOGO PLACEMENT
+// ============================================================
+
+model LogoPlacement {
+  id        String   @id @default(cuid())
+  projectId String   @unique
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  fileUrl   String
+  fileType  String   // 'png', 'svg', 'dxf', 'jpg'
+  layer     String   // 'top_silk', 'bottom_silk', etc.
+  positionX Float
+  positionY Float
+  width     Float
+  height    Float
+  rotation  Int      @default(0) // 0, 90, 180, 270
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================================
+// COMPONENTS & BOM
+// ============================================================
+
+model Component {
+  id                     String   @id @default(cuid())
+  digikeyPartNumber      String?  @unique
+  manufacturerPartNumber String
+  manufacturer           String
+  description            String
+  category               String
+  unitPrice              Float
+  currency               String   @default("USD")
+  stock                  Int      @default(0)
+  datasheetUrl           String?
+  imageUrl               String?
+  footprint              String?
+  symbol                 String?
+  specifications         Json?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  // Relations
+  bomItems BOMItem[]
+
+  @@index([manufacturerPartNumber])
+  @@index([category])
+}
+
+model BOMItem {
+  id          String    @id @default(cuid())
+  projectId   String
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  componentId String
+  component   Component @relation(fields: [componentId], references: [id])
+  quantity    Int
+  designators String[]  // e.g., ['R1', 'R2', 'R3']
+  dnp         Boolean   @default(false)
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([projectId])
+}
+
+// ============================================================
+// AI CHAT
+// ============================================================
+
+model ChatSession {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  messages ChatMessage[]
+
+  @@index([projectId])
+  @@index([userId])
+}
+
+model ChatMessage {
+  id            String      @id @default(cuid())
+  sessionId     String
+  session       ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role          ChatRole
+  content       String
+  metadata      Json?
+  createdAt     DateTime    @default(now())
+
+  @@index([sessionId])
+}
+
+enum ChatRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+// ============================================================
+// QUOTES & ORDERS
+// ============================================================
+
+model QuoteConfirmation {
+  id              String   @id @default(cuid())
+  projectId       String
+  project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  preview3dUrl    String?
+  topViewUrl      String?
+  bottomViewUrl   String?
+  specifications  Json
+  drcStatus       String
+  drcSummary      String
+  estimatedBOMCost Float
+  confirmedAt     DateTime @default(now())
+
+  // Relations
+  quote PCBQuote?
+
+  @@index([projectId])
+  @@index([userId])
+}
+
+model PCBQuote {
+  id               String            @id @default(cuid())
+  projectId        String
+  project          Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  confirmationId   String            @unique
+  confirmation     QuoteConfirmation @relation(fields: [confirmationId], references: [id])
+  quantity         Int
+  unitPrice        Float
+  totalPrice       Float
+  currency         String            @default("USD")
+  productionDays   Int
+  shippingDays     Int
+  provider         String            @default("pcbway")
+  providerQuoteId  String?
+  expiresAt        DateTime
+  createdAt        DateTime          @default(now())
+
+  // Relations
+  orders PCBOrder[]
+
+  @@index([projectId])
+}
+
+model PCBOrder {
+  id                    String      @id @default(cuid())
+  projectId             String
+  project               Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId                String
+  user                  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quoteId               String
+  quote                 PCBQuote    @relation(fields: [quoteId], references: [id])
+  quantity              Int
+  totalPrice            Float
+  currency              String      @default("USD")
+  stripePaymentIntentId String?
+  paidAt                DateTime?
+  shippingAddress       Json
+  trackingNumber        String?
+  carrier               String?
+  status                OrderStatus @default(PENDING)
+  statusHistory         Json        @default("[]")
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  estimatedDeliveryAt   DateTime?
+  deliveredAt           DateTime?
+
+  @@index([projectId])
+  @@index([userId])
+  @@index([status])
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  IN_PRODUCTION
+  QUALITY_CHECK
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+// ============================================================
+// DRAFTSMAN REPORTS
+// ============================================================
+
+model DraftsmanReport {
+  id          String     @id @default(cuid())
+  projectId   String
+  project     Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  type        ReportType
+  title       String
+  fileUrl     String
+  format      String     @default("pdf")
+  generatedAt DateTime   @default(now())
+
+  @@index([projectId])
+}
+
+enum ReportType {
+  ASSEMBLY_DRAWING
+  FABRICATION_DRAWING
+  BOM_REPORT
+  SCHEMATIC_PRINT
+  DRILL_CHART
+  LAYER_STACK
+}
+
+// ============================================================
+// MARKETPLACE
+// ============================================================
+
+model MarketplaceListing {
+  id                String        @id @default(cuid())
+  sellerId          String
+  seller            User          @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  projectId         String?
+  project           Project?      @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  type              ListingType
+  title             String
+  description       String
+  category          String
+  tags              String[]
+  images            String[]
+
+  // Design files
+  includesGerber    Boolean       @default(false)
+  includesAltium    Boolean       @default(false)
+  includesBOM       Boolean       @default(false)
+  includesSchematic Boolean       @default(false)
+
+  // Pricing
+  priceCents        Int
+  currency          String        @default("USD")
+  shippingRates     Json          @default("[]")
+
+  // Options
+  variants          Json          @default("[]")
+
+  // Inventory
+  stockQuantity     Int?
+  leadTimeDays      Int?
+
+  // Stats
+  viewCount         Int           @default(0)
+  downloadCount     Int           @default(0)
+  soldCount         Int           @default(0)
+  averageRating     Float         @default(0)
+  reviewCount       Int           @default(0)
+
+  // Status
+  status            ListingStatus @default(PENDING)
+  rejectionReason   String?
+
+  // Timestamps
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  // Relations
+  orders            MarketplaceOrder[]
+  reviews           MarketplaceReview[]
+
+  @@index([sellerId])
+  @@index([category])
+  @@index([status])
+}
+
+enum ListingType {
+  DESIGN_ONLY
+  ASSEMBLED_BOARD
+  KIT
+  DESIGN_AND_BOARD
+}
+
+enum ListingStatus {
+  PENDING
+  ACTIVE
+  REJECTED
+  ARCHIVED
+}
+
+model MarketplaceOrder {
+  id                    String                 @id @default(cuid())
+  listingId             String
+  listing               MarketplaceListing     @relation(fields: [listingId], references: [id])
+  buyerId               String
+  buyer                 User                   @relation("BuyerOrders", fields: [buyerId], references: [id])
+  sellerId              String
+  seller                User                   @relation("SellerOrders", fields: [sellerId], references: [id])
+  quantity              Int
+  unitPriceCents        Int
+  shippingCents         Int
+  totalCents            Int
+  platformFeeCents      Int
+  paymentFeeCents       Int
+  sellerPayoutCents     Int
+  shippingAddress       Json?
+  trackingNumber        String?
+  carrier               String?
+  stripePaymentIntentId String?
+  status                MarketplaceOrderStatus @default(PENDING)
+  createdAt             DateTime               @default(now())
+  paidAt                DateTime?
+  shippedAt             DateTime?
+  deliveredAt           DateTime?
+
+  // Relations
+  review MarketplaceReview?
+
+  @@index([listingId])
+  @@index([buyerId])
+  @@index([sellerId])
+  @@index([status])
+}
+
+enum MarketplaceOrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+model MarketplaceReview {
+  id                String             @id @default(cuid())
+  listingId         String
+  listing           MarketplaceListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  orderId           String             @unique
+  order             MarketplaceOrder   @relation(fields: [orderId], references: [id])
+  buyerId           String
+  buyer             User               @relation(fields: [buyerId], references: [id])
+  rating            Int                // 1-5
+  title             String?
+  content           String?
+  sellerResponse    String?
+  sellerRespondedAt DateTime?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@unique([listingId, buyerId])
+  @@index([listingId])
+}
+
+model SellerPayout {
+  id               String       @id @default(cuid())
+  sellerId         String
+  seller           User         @relation(fields: [sellerId], references: [id])
+  amountCents      Int
+  currency         String       @default("USD")
+  stripeTransferId String?
+  status           PayoutStatus @default(PENDING)
+  createdAt        DateTime     @default(now())
+  completedAt      DateTime?
+
+  @@index([sellerId])
+  @@index([status])
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+// ============================================================
+// NOTIFICATIONS
+// ============================================================
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  message   String
+  data      Json?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  @@index([userId])
+  @@index([read])
+}
+
+enum NotificationType {
+  ORDER_STATUS
+  DESIGN_SHARED
+  REVIEW_RECEIVED
+  PAYOUT_COMPLETED
+  LISTING_APPROVED
+  LISTING_REJECTED
+  DRC_COMPLETED
+  QUOTE_READY
+}
