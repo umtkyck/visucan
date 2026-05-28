@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@visucan/database/client';
 import { signInSchema, createSuccessResponse, createErrorResponse } from '@visucan/utils';
-import { verifyPassword, generateTokens, setAuthCookies } from '@/lib/auth';
+import { verifyPassword, generateTokens, setAuthCookies, serializeUser } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,9 +19,20 @@ export async function POST(request: NextRequest) {
 
     const { email, password } = validatedData.data;
 
-    // Find user
+    // Find user with only needed fields
     const user = await db.user.findUnique({
       where: { email },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        avatarUrl: true,
+        passwordHash: true,
+        role: true,
+        subscription: true,
+        emailVerified: true,
+        createdAt: true,
+      },
     });
 
     if (!user) {
@@ -47,14 +58,7 @@ export async function POST(request: NextRequest) {
     // Create response with cookies
     const response = NextResponse.json(
       createSuccessResponse({
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          avatarUrl: user.avatarUrl,
-          subscription: user.subscription.toLowerCase(),
-          role: user.role.toLowerCase(),
-        },
+        user: serializeUser(user),
         accessToken: tokens.accessToken,
         expiresIn: tokens.expiresIn,
       })

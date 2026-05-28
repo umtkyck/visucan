@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@visucan/database/client';
 import { signUpSchema, createSuccessResponse, createErrorResponse } from '@visucan/utils';
-import { hashPassword, generateTokens, setAuthCookies } from '@/lib/auth';
+import { hashPassword, generateTokens, setAuthCookies, serializeUser } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,9 +19,10 @@ export async function POST(request: NextRequest) {
 
     const { email, password, name } = validatedData.data;
 
-    // Check if user exists
+    // Check if user exists (only need id)
     const existingUser = await db.user.findUnique({
       where: { email },
+      select: { id: true },
     });
 
     if (existingUser) {
@@ -34,7 +35,7 @@ export async function POST(request: NextRequest) {
     // Hash password
     const passwordHash = await hashPassword(password);
 
-    // Create user
+    // Create user and return needed fields
     const user = await db.user.create({
       data: {
         email,
@@ -42,6 +43,16 @@ export async function POST(request: NextRequest) {
         passwordHash,
         subscription: 'LITE',
         role: 'USER',
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        avatarUrl: true,
+        role: true,
+        subscription: true,
+        emailVerified: true,
+        createdAt: true,
       },
     });
 
@@ -51,12 +62,7 @@ export async function POST(request: NextRequest) {
     // Create response with cookies
     const response = NextResponse.json(
       createSuccessResponse({
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          subscription: user.subscription.toLowerCase(),
-        },
+        user: serializeUser(user),
         accessToken: tokens.accessToken,
         expiresIn: tokens.expiresIn,
       }),
