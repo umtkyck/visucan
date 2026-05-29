@@ -2,9 +2,27 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@visucan/database/client';
 import { signInSchema, createSuccessResponse, createErrorResponse } from '@visucan/utils';
 import { verifyPassword, generateTokens, setAuthCookies, serializeUser } from '@/lib/auth';
+import { rateLimit, authRateLimit, getClientIP } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting
+    const clientIP = getClientIP(request);
+    const rateLimitResult = rateLimit(`signin:${clientIP}`, authRateLimit.signin);
+
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        createErrorResponse('RATE_LIMITED', 'Too many login attempts. Please try again later.'),
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000)),
+            'X-RateLimit-Remaining': '0',
+          },
+        }
+      );
+    }
+
     const body = await request.json();
     const validatedData = signInSchema.safeParse(body);
 

@@ -14,8 +14,9 @@ export const config = {
   corsOrigins: (getEnvVarOptional('CORS_ORIGINS') || 'http://localhost:3000').split(','),
 
   // Auth
-  jwtSecret: getEnvVarOptional('JWT_SECRET') || 'visucan-dev-jwt-secret-change-in-production',
-  jwtRefreshSecret: getEnvVarOptional('JWT_REFRESH_SECRET') || 'visucan-dev-refresh-secret-change-in-production',
+  jwtSecret: getEnvVar('JWT_SECRET'),
+  jwtRefreshSecret: getEnvVar('JWT_REFRESH_SECRET'),
+  passwordSalt: getEnvVar('PASSWORD_SALT'),
   cookieSecret: getEnvVarOptional('COOKIE_SECRET') || 'visucan-dev-cookie-secret-change-in-production',
 
   // Database
