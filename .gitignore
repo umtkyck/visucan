@@ -62,3 +62,5 @@ service-account.json
 
 # Hardware design files (Altium project, ~200MB of binaries - kept local only)
 hardware/
+.vercel
+.env*
