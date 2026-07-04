@@ -100,43 +100,43 @@ export default function HomePage() {
     <div className="min-h-screen bg-[#05070b] text-white antialiased selection:bg-sky-400/30">
       {/* Navigation */}
       <nav className="fixed top-0 z-50 w-full border-b border-white/[0.06] bg-[#05070b]/70 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span className="block h-2 w-2 rounded-full bg-sky-400" />
-            <span className="font-display text-[15px] font-medium tracking-tight">
+        <div className="mx-auto flex h-24 max-w-6xl items-center justify-between px-6">
+          <Link href="/" className="flex items-center gap-3">
+            <span className="block h-3 w-3 rounded-full bg-sky-400" />
+            <span className="font-display text-2xl font-medium tracking-tight">
               VisuCAN
             </span>
           </Link>
-          <div className="hidden items-center gap-10 md:flex">
+          <div className="hidden items-center gap-12 md:flex">
             <Link
               href="#features"
-              className="text-[13px] text-white/50 transition-colors hover:text-white"
+              className="text-[15px] text-white/50 transition-colors hover:text-white"
             >
               Features
             </Link>
             <Link
               href="#pricing"
-              className="text-[13px] text-white/50 transition-colors hover:text-white"
+              className="text-[15px] text-white/50 transition-colors hover:text-white"
             >
               Pricing
             </Link>
             <Link
               href="/marketplace"
-              className="text-[13px] text-white/50 transition-colors hover:text-white"
+              className="text-[15px] text-white/50 transition-colors hover:text-white"
             >
               Marketplace
             </Link>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-7">
             <Link
               href="/auth/signin"
-              className="text-[13px] text-white/50 transition-colors hover:text-white"
+              className="text-[15px] text-white/50 transition-colors hover:text-white"
             >
               Sign in
             </Link>
             <Link
               href="/auth/signup"
-              className="rounded-full bg-white px-4 py-1.5 text-[13px] font-medium text-black transition-opacity hover:opacity-80"
+              className="rounded-full bg-white px-6 py-2.5 text-[15px] font-medium text-black transition-opacity hover:opacity-80"
             >
               Get started
             </Link>
@@ -324,16 +324,16 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="border-t border-white/[0.06]">
-        <div className="mx-auto max-w-6xl px-6 py-12">
-          <div className="flex flex-col items-center justify-between gap-8 sm:flex-row sm:items-start">
+        <div className="mx-auto max-w-6xl px-6 py-20">
+          <div className="flex flex-col items-center justify-between gap-12 sm:flex-row sm:items-start">
             <div>
-              <div className="flex items-center gap-2.5">
-                <span className="block h-2 w-2 rounded-full bg-sky-400" />
-                <span className="font-display text-[15px] font-medium tracking-tight">
+              <div className="flex items-center justify-center gap-3 sm:justify-start">
+                <span className="block h-3 w-3 rounded-full bg-sky-400" />
+                <span className="font-display text-2xl font-medium tracking-tight">
                   VisuCAN
                 </span>
               </div>
-              <div className="mt-4 space-y-1.5 text-center text-[13px] leading-relaxed text-white/35 sm:text-left">
+              <div className="mt-6 space-y-2.5 text-center text-[15px] leading-relaxed text-white/40 sm:text-left">
                 <p>
                   <a
                     href="tel:+12246299664"
@@ -355,28 +355,28 @@ export default function HomePage() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-10">
               <Link
                 href="/privacy"
-                className="text-[13px] text-white/35 transition-colors hover:text-white"
+                className="text-[15px] text-white/40 transition-colors hover:text-white"
               >
                 Privacy
               </Link>
               <Link
                 href="/terms"
-                className="text-[13px] text-white/35 transition-colors hover:text-white"
+                className="text-[15px] text-white/40 transition-colors hover:text-white"
               >
                 Terms
               </Link>
               <a
                 href="mailto:support@visucan.io"
-                className="text-[13px] text-white/35 transition-colors hover:text-white"
+                className="text-[15px] text-white/40 transition-colors hover:text-white"
               >
                 Contact
               </a>
             </div>
           </div>
-          <p className="mt-10 text-center text-[12px] text-white/25 sm:text-left">
+          <p className="mt-14 text-center text-[13px] text-white/25 sm:text-left">
             © {new Date().getFullYear()} VisuCAN. All rights reserved.
           </p>
         </div>
