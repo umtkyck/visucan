@@ -1,386 +1,355 @@
 import Link from 'next/link';
-import {
-  Cpu,
-  Zap,
-  ShoppingCart,
-  FileText,
-  Users,
-  ArrowRight,
-  Check,
-  Sparkles,
-} from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import { HeroCanvas } from '@/components/landing/hero-canvas';
+
+const FEATURES = [
+  {
+    index: '01',
+    title: 'Claude AI Assistant',
+    description:
+      'Describe your circuit in plain language. The AI turns intent into block diagrams, schematics, and layout decisions.',
+  },
+  {
+    index: '02',
+    title: 'Block Diagram to PCB',
+    description:
+      'One continuous workflow from system sketch to routed board. No tool switching, no file juggling.',
+  },
+  {
+    index: '03',
+    title: 'DigiKey Sourcing',
+    description:
+      'Live component search with real pricing and stock. Every part in your BOM is orderable.',
+  },
+  {
+    index: '04',
+    title: 'PCBWAY Quoting',
+    description:
+      'Instant manufacturing quotes with visual confirmation before anything goes to fab.',
+  },
+  {
+    index: '05',
+    title: 'Draftsman Reports',
+    description:
+      'Assembly drawings, fab drawings, and BOM documentation generated to professional standards.',
+  },
+  {
+    index: '06',
+    title: 'Marketplace',
+    description:
+      'Sell finished designs or assembled boards. Buy proven reference designs from other engineers.',
+  },
+];
+
+const PLANS = [
+  {
+    name: 'Lite',
+    price: '$0',
+    period: '/mo',
+    tagline: 'For getting started',
+    features: [
+      '2 projects',
+      '2-layer boards',
+      '10 × 10 cm max size',
+      '50 AI messages / month',
+      'Gerber export',
+    ],
+    cta: 'Get started',
+    href: '/auth/signup',
+    highlighted: false,
+  },
+  {
+    name: 'Pro',
+    price: '$49',
+    period: '/mo',
+    tagline: 'For serious makers',
+    features: [
+      'Unlimited projects',
+      '4-layer boards',
+      '30 × 30 cm max size',
+      '500 AI messages / month',
+      'All export formats',
+      'Logo placement & order tracking',
+      'Marketplace selling — 5% fee',
+    ],
+    cta: 'Start free trial',
+    href: '/auth/signup?plan=pro',
+    highlighted: true,
+  },
+  {
+    name: 'Enterprise',
+    price: 'Custom',
+    period: '',
+    tagline: 'For teams',
+    features: [
+      'Everything in Pro',
+      'Unlimited AI messages',
+      'Custom board limits',
+      'API access & SSO',
+      'Dedicated support',
+      'Marketplace selling — 3% fee',
+    ],
+    cta: 'Contact sales',
+    href: '/contact',
+    highlighted: false,
+  },
+];
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900">
+    <div className="min-h-screen bg-[#05070b] text-white antialiased selection:bg-sky-400/30">
       {/* Navigation */}
-      <nav className="fixed top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md dark:border-gray-800 dark:bg-gray-950/80">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600">
-              <Cpu className="h-5 w-5 text-white" />
-            </div>
-            <span className="text-xl font-bold text-gray-900 dark:text-white">
+      <nav className="fixed top-0 z-50 w-full border-b border-white/[0.06] bg-[#05070b]/70 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+          <Link href="/" className="flex items-center gap-2.5">
+            <span className="block h-2 w-2 rounded-full bg-sky-400" />
+            <span className="text-[15px] font-medium tracking-tight">
               VisuCAN
             </span>
-          </div>
-          <div className="hidden items-center gap-8 md:flex">
+          </Link>
+          <div className="hidden items-center gap-10 md:flex">
             <Link
               href="#features"
-              className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+              className="text-[13px] text-white/50 transition-colors hover:text-white"
             >
               Features
             </Link>
             <Link
               href="#pricing"
-              className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+              className="text-[13px] text-white/50 transition-colors hover:text-white"
             >
               Pricing
             </Link>
             <Link
               href="/marketplace"
-              className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+              className="text-[13px] text-white/50 transition-colors hover:text-white"
             >
               Marketplace
             </Link>
-            <Link
-              href="/docs"
-              className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-            >
-              Docs
-            </Link>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <Link
               href="/auth/signin"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+              className="text-[13px] text-white/50 transition-colors hover:text-white"
             >
-              Sign In
+              Sign in
             </Link>
             <Link
               href="/auth/signup"
-              className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700"
+              className="rounded-full bg-white px-4 py-1.5 text-[13px] font-medium text-black transition-opacity hover:opacity-80"
             >
-              Get Started
+              Get started
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-32">
-        <div className="absolute inset-0 -z-10 pcb-grid opacity-50" />
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary-200 bg-primary-50 px-4 py-1.5 text-sm text-primary-700 dark:border-primary-900 dark:bg-primary-950 dark:text-primary-300">
-              <Sparkles className="h-4 w-4" />
-              Powered by Claude AI + Altium Designer
-            </div>
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl lg:text-7xl">
-              Design PCBs with
-              <br />
-              <span className="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-                AI Intelligence
-              </span>
-            </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
-              From concept to manufacturing in hours, not weeks. VisuCAN
-              combines conversational AI with professional PCB tools for a
-              seamless design experience.
-            </p>
-            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Link
-                href="/auth/signup"
-                className="flex items-center gap-2 rounded-lg bg-primary-600 px-6 py-3 text-lg font-medium text-white hover:bg-primary-700"
-              >
-                Start Designing Free
-                <ArrowRight className="h-5 w-5" />
-              </Link>
-              <Link
-                href="#demo"
-                className="flex items-center gap-2 rounded-lg border border-gray-300 px-6 py-3 text-lg font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
-              >
-                Watch Demo
-              </Link>
-            </div>
-          </div>
+      {/* Hero */}
+      <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
+        <HeroCanvas />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#05070b_78%)]" />
 
-          {/* Hero Image Placeholder */}
-          <div className="mt-16 rounded-xl border border-gray-200 bg-white p-2 shadow-2xl dark:border-gray-800 dark:bg-gray-900">
-            <div className="aspect-video w-full rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700">
-              <div className="flex h-full items-center justify-center">
-                <div className="text-center">
-                  <Cpu className="mx-auto h-16 w-16 text-gray-400" />
-                  <p className="mt-4 text-gray-500">
-                    Interactive PCB Design Interface
-                  </p>
-                </div>
-              </div>
-            </div>
+        <div className="relative z-10 mx-auto max-w-4xl px-6 text-center">
+          <p className="mb-8 text-[13px] font-medium uppercase tracking-[0.25em] text-sky-400/80">
+            AI-native PCB design
+          </p>
+          <h1 className="text-5xl font-light leading-[1.05] tracking-[-0.03em] sm:text-7xl">
+            From idea to
+            <br />
+            <span className="font-medium text-sky-300">manufactured board.</span>
+          </h1>
+          <p className="mx-auto mt-8 max-w-md text-[15px] leading-relaxed text-white/45">
+            VisuCAN pairs conversational AI with professional PCB tooling.
+            Describe the circuit — get schematics, layout, and a fab quote.
+          </p>
+          <div className="mt-12 flex items-center justify-center gap-4">
+            <Link
+              href="/auth/signup"
+              className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-black transition-opacity hover:opacity-80"
+            >
+              Start designing
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+            <Link
+              href="#features"
+              className="rounded-full border border-white/15 px-6 py-3 text-sm text-white/70 transition-colors hover:border-white/30 hover:text-white"
+            >
+              Learn more
+            </Link>
           </div>
+        </div>
+
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
+          <div className="h-10 w-px bg-gradient-to-b from-white/30 to-transparent" />
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-20 sm:py-32">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
-              Everything you need to design PCBs
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-gray-600 dark:text-gray-400">
-              A complete workflow from block diagram to manufactured boards,
-              powered by AI.
+      {/* Stats strip */}
+      <section className="border-y border-white/[0.06]">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 divide-x divide-white/[0.06] md:grid-cols-4">
+          {[
+            ['Hours', 'concept to quote'],
+            ['4-layer', 'board support'],
+            ['Live', 'DigiKey pricing'],
+            ['Zero', 'installs required'],
+          ].map(([value, label]) => (
+            <div key={label} className="px-6 py-10 text-center">
+              <div className="text-2xl font-light tracking-tight text-white">
+                {value}
+              </div>
+              <div className="mt-1 text-[12px] uppercase tracking-[0.15em] text-white/35">
+                {label}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Features */}
+      <section id="features" className="mx-auto max-w-6xl px-6 py-32">
+        <div className="max-w-xl">
+          <p className="text-[13px] font-medium uppercase tracking-[0.25em] text-sky-400/80">
+            Capabilities
+          </p>
+          <h2 className="mt-4 text-3xl font-light tracking-[-0.02em] sm:text-4xl">
+            The whole workflow,
+            <br />
+            one surface.
+          </h2>
+        </div>
+
+        <div className="mt-20 grid gap-px overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.06] sm:grid-cols-2 lg:grid-cols-3">
+          {FEATURES.map((feature) => (
+            <div
+              key={feature.index}
+              className="group bg-[#05070b] p-8 transition-colors hover:bg-[#080b12]"
+            >
+              <span className="font-mono text-[12px] text-sky-400/60">
+                {feature.index}
+              </span>
+              <h3 className="mt-6 text-[15px] font-medium text-white">
+                {feature.title}
+              </h3>
+              <p className="mt-3 text-[13.5px] leading-relaxed text-white/40">
+                {feature.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="pricing" className="border-t border-white/[0.06]">
+        <div className="mx-auto max-w-6xl px-6 py-32">
+          <div className="max-w-xl">
+            <p className="text-[13px] font-medium uppercase tracking-[0.25em] text-sky-400/80">
+              Pricing
             </p>
+            <h2 className="mt-4 text-3xl font-light tracking-[-0.02em] sm:text-4xl">
+              Start free. Scale when
+              <br />
+              the boards do.
+            </h2>
           </div>
 
-          <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                icon: Sparkles,
-                title: 'Claude AI Assistant',
-                description:
-                  'Conversational AI that understands your design intent and guides you through every step.',
-              },
-              {
-                icon: Cpu,
-                title: 'Block Diagram → PCB',
-                description:
-                  'Describe your system and let AI generate block diagrams, schematics, and layouts.',
-              },
-              {
-                icon: Zap,
-                title: 'DigiKey Integration',
-                description:
-                  'Real-time component search, pricing, and availability from DigiKey.',
-              },
-              {
-                icon: ShoppingCart,
-                title: 'PCBWAY Quoting',
-                description:
-                  'Instant manufacturing quotes with visual confirmation before ordering.',
-              },
-              {
-                icon: FileText,
-                title: 'Draftsman Reports',
-                description:
-                  'Professional assembly drawings, fab drawings, and BOM reports.',
-              },
-              {
-                icon: Users,
-                title: 'Marketplace',
-                description:
-                  'Buy and sell PCB designs and assembled boards in our community marketplace.',
-              },
-            ].map((feature, index) => (
+          <div className="mt-20 grid gap-6 lg:grid-cols-3">
+            {PLANS.map((plan) => (
               <div
-                key={index}
-                className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
+                key={plan.name}
+                className={`flex flex-col rounded-2xl border p-8 ${
+                  plan.highlighted
+                    ? 'border-sky-400/40 bg-sky-400/[0.04]'
+                    : 'border-white/[0.08]'
+                }`}
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary-100 dark:bg-primary-900">
-                  <feature.icon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
+                <div className="flex items-baseline justify-between">
+                  <h3 className="text-[15px] font-medium">{plan.name}</h3>
+                  {plan.highlighted && (
+                    <span className="rounded-full border border-sky-400/40 px-2.5 py-0.5 text-[11px] uppercase tracking-wider text-sky-300">
+                      Popular
+                    </span>
+                  )}
                 </div>
-                <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">
-                  {feature.title}
-                </h3>
-                <p className="mt-2 text-gray-600 dark:text-gray-400">
-                  {feature.description}
-                </p>
+                <p className="mt-1 text-[13px] text-white/35">{plan.tagline}</p>
+                <div className="mt-8 flex items-baseline gap-1">
+                  <span className="text-4xl font-light tracking-tight">
+                    {plan.price}
+                  </span>
+                  <span className="text-[13px] text-white/35">{plan.period}</span>
+                </div>
+                <ul className="mt-8 flex-1 space-y-3">
+                  {plan.features.map((feature) => (
+                    <li
+                      key={feature}
+                      className="flex items-start gap-3 text-[13.5px] text-white/55"
+                    >
+                      <span className="mt-[7px] block h-1 w-1 shrink-0 rounded-full bg-sky-400/70" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href={plan.href}
+                  className={`mt-10 block rounded-full py-2.5 text-center text-sm font-medium transition-opacity hover:opacity-80 ${
+                    plan.highlighted
+                      ? 'bg-white text-black'
+                      : 'border border-white/15 text-white/80'
+                  }`}
+                >
+                  {plan.cta}
+                </Link>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="bg-gray-50 py-20 dark:bg-gray-900 sm:py-32">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
-              Simple, transparent pricing
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-gray-600 dark:text-gray-400">
-              Start free and upgrade as you grow. No hidden fees.
-            </p>
-          </div>
-
-          <div className="mt-16 grid gap-8 lg:grid-cols-3">
-            {/* Lite Plan */}
-            <div className="rounded-xl border border-gray-200 bg-white p-8 dark:border-gray-800 dark:bg-gray-950">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Lite
-              </h3>
-              <p className="mt-2 text-gray-600 dark:text-gray-400">
-                Perfect for getting started
-              </p>
-              <div className="mt-6">
-                <span className="text-4xl font-bold text-gray-900 dark:text-white">
-                  $0
-                </span>
-                <span className="text-gray-600 dark:text-gray-400">/month</span>
-              </div>
-              <ul className="mt-8 space-y-4">
-                {[
-                  '2 projects',
-                  '2-layer PCBs',
-                  '10x10cm max board size',
-                  '50 AI messages/month',
-                  'Basic exports (Gerber)',
-                ].map((feature, index) => (
-                  <li key={index} className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span className="text-gray-600 dark:text-gray-400">
-                      {feature}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/auth/signup"
-                className="mt-8 block w-full rounded-lg border border-gray-300 py-3 text-center font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
-              >
-                Get Started
-              </Link>
-            </div>
-
-            {/* Pro Plan */}
-            <div className="relative rounded-xl border-2 border-primary-500 bg-white p-8 dark:bg-gray-950">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-primary-600 px-4 py-1 text-sm font-medium text-white">
-                Most Popular
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Pro
-              </h3>
-              <p className="mt-2 text-gray-600 dark:text-gray-400">
-                For serious makers
-              </p>
-              <div className="mt-6">
-                <span className="text-4xl font-bold text-gray-900 dark:text-white">
-                  $49
-                </span>
-                <span className="text-gray-600 dark:text-gray-400">/month</span>
-              </div>
-              <ul className="mt-8 space-y-4">
-                {[
-                  'Unlimited projects',
-                  '4-layer PCBs',
-                  '30x30cm max board size',
-                  '500 AI messages/month',
-                  'All export formats',
-                  'Logo placement',
-                  'Order tracking',
-                  'Marketplace selling (5% fee)',
-                ].map((feature, index) => (
-                  <li key={index} className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span className="text-gray-600 dark:text-gray-400">
-                      {feature}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/auth/signup?plan=pro"
-                className="mt-8 block w-full rounded-lg bg-primary-600 py-3 text-center font-medium text-white hover:bg-primary-700"
-              >
-                Start Free Trial
-              </Link>
-            </div>
-
-            {/* Enterprise Plan */}
-            <div className="rounded-xl border border-gray-200 bg-white p-8 dark:border-gray-800 dark:bg-gray-950">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Enterprise
-              </h3>
-              <p className="mt-2 text-gray-600 dark:text-gray-400">
-                For teams and organizations
-              </p>
-              <div className="mt-6">
-                <span className="text-4xl font-bold text-gray-900 dark:text-white">
-                  Custom
-                </span>
-              </div>
-              <ul className="mt-8 space-y-4">
-                {[
-                  'Everything in Pro',
-                  'Unlimited AI messages',
-                  'Custom board size limits',
-                  'API access',
-                  'SSO / SAML',
-                  'Dedicated support',
-                  'Custom integrations',
-                  'Marketplace selling (3% fee)',
-                ].map((feature, index) => (
-                  <li key={index} className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-green-500" />
-                    <span className="text-gray-600 dark:text-gray-400">
-                      {feature}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/contact"
-                className="mt-8 block w-full rounded-lg border border-gray-300 py-3 text-center font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
-              >
-                Contact Sales
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 sm:py-32">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-2xl bg-gradient-to-r from-primary-600 to-secondary-600 px-8 py-16 text-center sm:px-16">
-            <h2 className="text-3xl font-bold text-white sm:text-4xl">
-              Ready to design your next PCB?
-            </h2>
-            <p className="mx-auto mt-4 max-w-xl text-lg text-primary-100">
-              Join thousands of engineers and makers who use VisuCAN to bring
-              their ideas to life.
-            </p>
-            <Link
-              href="/auth/signup"
-              className="mt-8 inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-lg font-medium text-primary-600 hover:bg-primary-50"
-            >
-              Start Designing Free
-              <ArrowRight className="h-5 w-5" />
-            </Link>
-          </div>
+      {/* CTA */}
+      <section className="border-t border-white/[0.06]">
+        <div className="mx-auto max-w-6xl px-6 py-32 text-center">
+          <h2 className="mx-auto max-w-2xl text-4xl font-light leading-tight tracking-[-0.02em] sm:text-5xl">
+            Your next board is a
+            <span className="text-sky-300"> conversation </span>
+            away.
+          </h2>
+          <Link
+            href="/auth/signup"
+            className="group mt-12 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-medium text-black transition-opacity hover:opacity-80"
+          >
+            Start designing free
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 bg-white py-12 dark:border-gray-800 dark:bg-gray-950">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600">
-                <Cpu className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-xl font-bold text-gray-900 dark:text-white">
-                VisuCAN
-              </span>
-            </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              &copy; {new Date().getFullYear()} VisuCAN. All rights reserved.
-            </p>
-            <div className="flex items-center gap-6">
-              <Link
-                href="/privacy"
-                className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-              >
-                Privacy
-              </Link>
-              <Link
-                href="/terms"
-                className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-              >
-                Terms
-              </Link>
-            </div>
+      <footer className="border-t border-white/[0.06]">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 py-12 sm:flex-row">
+          <div className="flex items-center gap-2.5">
+            <span className="block h-2 w-2 rounded-full bg-sky-400" />
+            <span className="text-[13px] text-white/50">
+              © {new Date().getFullYear()} VisuCAN
+            </span>
+          </div>
+          <div className="flex items-center gap-8">
+            <Link
+              href="/privacy"
+              className="text-[13px] text-white/35 transition-colors hover:text-white"
+            >
+              Privacy
+            </Link>
+            <Link
+              href="/terms"
+              className="text-[13px] text-white/35 transition-colors hover:text-white"
+            >
+              Terms
+            </Link>
+            <a
+              href="mailto:support@visucan.io"
+              className="text-[13px] text-white/35 transition-colors hover:text-white"
+            >
+              Contact
+            </a>
           </div>
         </div>
       </footer>

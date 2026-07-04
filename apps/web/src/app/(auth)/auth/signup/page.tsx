@@ -3,7 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Cpu, Mail, Lock, Eye, EyeOff, User, Check } from 'lucide-react';
+import { Eye, EyeOff, Check } from 'lucide-react';
+
+const INPUT_CLASSES =
+  'w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-white placeholder:text-white/25 transition-colors focus:border-sky-400/60 focus:outline-none';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -26,7 +29,6 @@ export default function SignUpPage() {
     setIsLoading(true);
     setError('');
 
-    // Check password requirements
     if (!passwordRequirements.every((req) => req.met)) {
       setError('Please meet all password requirements');
       setIsLoading(false);
@@ -55,224 +57,132 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 dark:bg-gray-950">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="mb-8 text-center">
-          <Link href="/" className="inline-flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-600">
-              <Cpu className="h-6 w-6 text-white" />
-            </div>
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">
-              VisuCAN
-            </span>
-          </Link>
-        </div>
+    <div className="flex min-h-screen items-center justify-center bg-[#05070b] px-4 py-12 text-white">
+      <div className="w-full max-w-sm">
+        <Link href="/" className="mb-12 flex items-center justify-center gap-2.5">
+          <span className="block h-2 w-2 rounded-full bg-sky-400" />
+          <span className="text-[15px] font-medium tracking-tight">VisuCAN</span>
+        </Link>
 
-        {/* Form Card */}
-        <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Create your account
-          </h1>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">
-            Start designing PCBs with AI assistance
-          </p>
+        <h1 className="text-center text-2xl font-light tracking-tight">
+          Create your account
+        </h1>
+        <p className="mt-2 text-center text-[13px] text-white/40">
+          Start designing PCBs with AI assistance
+        </p>
 
-          {error && (
-            <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
-              {error}
-            </div>
-          )}
+        {error && (
+          <div className="mt-6 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+            {error}
+          </div>
+        )}
 
-          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-            {/* Name */}
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Full Name
-              </label>
-              <div className="relative mt-1">
-                <User className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                <input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-                  placeholder="John Doe"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Email */}
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Email
-              </label>
-              <div className="relative mt-1">
-                <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-                  placeholder="you@example.com"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Password */}
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Password
-              </label>
-              <div className="relative mt-1">
-                <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                <input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-12 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-                  placeholder="Create a password"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
-                </button>
-              </div>
-
-              {/* Password Requirements */}
-              {password.length > 0 && (
-                <div className="mt-3 space-y-2">
-                  {passwordRequirements.map((req, index) => (
-                    <div
-                      key={index}
-                      className={`flex items-center gap-2 text-sm ${
-                        req.met
-                          ? 'text-green-600 dark:text-green-400'
-                          : 'text-gray-500 dark:text-gray-400'
-                      }`}
-                    >
-                      <Check
-                        className={`h-4 w-4 ${req.met ? 'opacity-100' : 'opacity-30'}`}
-                      />
-                      {req.label}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Terms */}
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              By signing up, you agree to our{' '}
-              <Link
-                href="/terms"
-                className="text-primary-600 hover:text-primary-700 dark:text-primary-400"
-              >
-                Terms of Service
-              </Link>{' '}
-              and{' '}
-              <Link
-                href="/privacy"
-                className="text-primary-600 hover:text-primary-700 dark:text-primary-400"
-              >
-                Privacy Policy
-              </Link>
-              .
-            </p>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full rounded-lg bg-primary-600 py-2.5 font-medium text-white hover:bg-primary-700 disabled:opacity-50"
-            >
-              {isLoading ? 'Creating account...' : 'Create Account'}
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200 dark:border-gray-700" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="bg-white px-2 text-gray-500 dark:bg-gray-900">
-                or continue with
-              </span>
-            </div>
+        <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+          <div>
+            <label htmlFor="name" className="mb-1.5 block text-[13px] text-white/50">
+              Full name
+            </label>
+            <input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className={INPUT_CLASSES}
+              placeholder="John Doe"
+              required
+            />
           </div>
 
-          {/* OAuth Buttons - Coming Soon */}
-          <div className="grid grid-cols-2 gap-4">
-            <button
-              disabled
-              className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 py-2.5 font-medium text-gray-400 cursor-not-allowed dark:border-gray-700 dark:text-gray-500"
-              title="Google sign-up coming soon"
-            >
-              <svg className="h-5 w-5" viewBox="0 0 24 24">
-                <path
-                  fill="currentColor"
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                />
-                <path
-                  fill="currentColor"
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                />
-                <path
-                  fill="currentColor"
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                />
-                <path
-                  fill="currentColor"
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                />
-              </svg>
-              Google
-            </button>
-            <button
-              disabled
-              className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 py-2.5 font-medium text-gray-400 cursor-not-allowed dark:border-gray-700 dark:text-gray-500"
-              title="GitHub sign-up coming soon"
-            >
-              <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-              </svg>
-              GitHub
-            </button>
+          <div>
+            <label htmlFor="email" className="mb-1.5 block text-[13px] text-white/50">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={INPUT_CLASSES}
+              placeholder="you@example.com"
+              required
+            />
           </div>
-          <p className="mt-2 text-center text-xs text-gray-400 dark:text-gray-500">
-            OAuth sign-up coming soon
-          </p>
-        </div>
 
-        {/* Sign In Link */}
-        <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+          <div>
+            <label
+              htmlFor="password"
+              className="mb-1.5 block text-[13px] text-white/50"
+            >
+              Password
+            </label>
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={`${INPUT_CLASSES} pr-11`}
+                placeholder="Create a password"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/30 transition-colors hover:text-white/70"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </button>
+            </div>
+
+            {password.length > 0 && (
+              <div className="mt-3 space-y-1.5">
+                {passwordRequirements.map((req) => (
+                  <div
+                    key={req.label}
+                    className={`flex items-center gap-2 text-[12.5px] ${
+                      req.met ? 'text-sky-300' : 'text-white/30'
+                    }`}
+                  >
+                    <Check
+                      className={`h-3.5 w-3.5 ${req.met ? 'opacity-100' : 'opacity-40'}`}
+                    />
+                    {req.label}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <p className="text-[12.5px] leading-relaxed text-white/35">
+            By signing up, you agree to our{' '}
+            <Link href="/terms" className="text-white/60 hover:text-white">
+              Terms of Service
+            </Link>{' '}
+            and{' '}
+            <Link href="/privacy" className="text-white/60 hover:text-white">
+              Privacy Policy
+            </Link>
+            .
+          </p>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full rounded-full bg-white py-2.5 text-sm font-medium text-black transition-opacity hover:opacity-80 disabled:opacity-40"
+          >
+            {isLoading ? 'Creating account…' : 'Create account'}
+          </button>
+        </form>
+
+        <p className="mt-8 text-center text-[13px] text-white/40">
           Already have an account?{' '}
           <Link
             href="/auth/signin"
-            className="font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400"
+            className="text-sky-300 transition-colors hover:text-sky-200"
           >
             Sign in
           </Link>
