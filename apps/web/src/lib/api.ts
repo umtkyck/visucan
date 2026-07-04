@@ -4,6 +4,7 @@
 // ============================================================
 
 import type { ApiResponse } from '@visucan/types';
+import type { ProjectDto, ProjectListDto } from '@/lib/projects';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 
@@ -166,19 +167,33 @@ export const authApi = {
 // Projects
 export const projectsApi = {
   list: (params?: { page?: number; limit?: number; status?: string }) =>
-    api.get('/projects', { params }),
+    api.get<ProjectListDto>('/projects', { params }),
 
-  get: (id: string) => api.get(`/projects/${id}`),
+  get: (id: string) => api.get<ProjectDto>(`/projects/${id}`),
 
-  create: (data: { name: string; description?: string; layerCount?: number }) =>
-    api.post('/projects', data),
+  create: (data: {
+    name: string;
+    description?: string;
+    boardWidth?: number;
+    boardHeight?: number;
+    layerCount?: number;
+  }) => api.post<ProjectDto>('/projects', data),
 
-  update: (id: string, data: Partial<{ name: string; description: string; status: string }>) =>
-    api.patch(`/projects/${id}`, data),
+  update: (
+    id: string,
+    data: Partial<{
+      name: string;
+      description: string;
+      status: string;
+      boardWidth: number;
+      boardHeight: number;
+      layerCount: number;
+    }>
+  ) => api.patch<ProjectDto>(`/projects/${id}`, data),
 
-  delete: (id: string) => api.delete(`/projects/${id}`),
+  delete: (id: string) => api.delete<{ message: string }>(`/projects/${id}`),
 
-  duplicate: (id: string) => api.post(`/projects/${id}/duplicate`),
+  duplicate: (id: string) => api.post<ProjectDto>(`/projects/${id}/duplicate`),
 };
 
 // Components (DigiKey)

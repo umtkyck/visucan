@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Plus,
   Search,
@@ -13,84 +14,111 @@ import {
   Layers,
   ChevronDown,
   Sparkles,
+  Trash2,
+  AlertTriangle,
 } from 'lucide-react';
+import type { ProjectStatus } from '@visucan/types';
+import { Modal, ModalFooter, Button, Spinner } from '@visucan/ui';
+import { projectsApi } from '@/lib/api';
+import type { ProjectDto } from '@/lib/projects';
+import { NewProjectModal } from '@/components/projects/new-project-modal';
 
-// Mock data for projects
-const mockProjects = [
-  {
-    id: '1',
-    name: 'Temperature Sensor Board',
-    description: 'ESP32-based temperature and humidity monitoring',
-    status: 'in_progress',
-    layers: 2,
-    boardSize: { width: 50, height: 40 },
-    updatedAt: new Date('2024-01-10'),
-    thumbnail: null,
-  },
-  {
-    id: '2',
-    name: 'Motor Controller',
-    description: 'STM32 4-channel motor driver with current sensing',
-    status: 'completed',
-    layers: 4,
-    boardSize: { width: 80, height: 60 },
-    updatedAt: new Date('2024-01-08'),
-    thumbnail: null,
-  },
-  {
-    id: '3',
-    name: 'USB-C PD Trigger',
-    description: 'USB Power Delivery trigger board',
-    status: 'draft',
-    layers: 2,
-    boardSize: { width: 30, height: 25 },
-    updatedAt: new Date('2024-01-05'),
-    thumbnail: null,
-  },
-];
+const STATUS_COLORS: Record<ProjectStatus, string> = {
+  draft: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
+  in_progress: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
+  completed: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
+  archived: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300',
+};
+
+const STATUS_LABELS: Record<ProjectStatus, string> = {
+  draft: 'Draft',
+  in_progress: 'In Progress',
+  completed: 'Completed',
+  archived: 'Archived',
+};
 
 export default function DashboardPage() {
+  const queryClient = useQueryClient();
+
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [isNewProjectOpen, setIsNewProjectOpen] = useState(false);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<ProjectDto | null>(null);
 
-  const filteredProjects = mockProjects.filter((project) => {
-    const matchesSearch =
-      project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus =
-      filterStatus === 'all' || project.status === filterStatus;
-    return matchesSearch && matchesStatus;
+  const projectsQuery = useQuery({
+    queryKey: ['projects', filterStatus],
+    queryFn: async () => {
+      const response = await projectsApi.list({
+        limit: 100,
+        status: filterStatus === 'all' ? undefined : filterStatus,
+      });
+      if (!response.success || !response.data) {
+        throw new Error(response.error?.message ?? 'Failed to load projects');
+      }
+      return response.data;
+    },
   });
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'draft':
-        return 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300';
-      case 'in_progress':
-        return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
-      case 'completed':
-        return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
-      default:
-        return 'bg-gray-100 text-gray-700';
-    }
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => projectsApi.delete(id),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      setDeleteTarget(null);
+    },
+  });
+
+  const projects = projectsQuery.data?.items ?? [];
+
+  const filteredProjects = projects.filter((project) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      project.name.toLowerCase().includes(query) ||
+      (project.description ?? '').toLowerCase().includes(query)
+    );
+  });
+
+  const handleMenuClick = (e: React.MouseEvent, projectId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setOpenMenuId(openMenuId === projectId ? null : projectId);
   };
 
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'draft':
-        return 'Draft';
-      case 'in_progress':
-        return 'In Progress';
-      case 'completed':
-        return 'Completed';
-      default:
-        return status;
-    }
+  const handleDeleteClick = (e: React.MouseEvent, project: ProjectDto) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setOpenMenuId(null);
+    setDeleteTarget(project);
   };
+
+  const renderProjectMenu = (project: ProjectDto) => (
+    <div className="relative">
+      <button
+        onClick={(e) => handleMenuClick(e, project.id)}
+        className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800"
+      >
+        <MoreHorizontal className="h-5 w-5" />
+      </button>
+      {openMenuId === project.id && (
+        <div className="absolute right-0 top-8 z-10 w-40 rounded-lg border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+          <button
+            onClick={(e) => handleDeleteClick(e, project)}
+            className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+          >
+            <Trash2 className="h-4 w-4" />
+            Delete
+          </button>
+        </div>
+      )}
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div
+      className="min-h-screen bg-gray-50 dark:bg-gray-950"
+      onClick={() => setOpenMenuId(null)}
+    >
       {/* Header */}
       <header className="border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -105,7 +133,10 @@ export default function DashboardPage() {
             </Link>
           </div>
           <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700">
+            <button
+              onClick={() => setIsNewProjectOpen(true)}
+              className="flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700"
+            >
               <Plus className="h-4 w-4" />
               New Project
             </button>
@@ -128,7 +159,10 @@ export default function DashboardPage() {
 
         {/* Quick Actions */}
         <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <button className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-4 text-left transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
+          <button
+            onClick={() => setIsNewProjectOpen(true)}
+            className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-4 text-left transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
+          >
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary-100 dark:bg-primary-900">
               <Plus className="h-6 w-6 text-primary-600 dark:text-primary-400" />
             </div>
@@ -200,6 +234,7 @@ export default function DashboardPage() {
                 <option value="draft">Draft</option>
                 <option value="in_progress">In Progress</option>
                 <option value="completed">Completed</option>
+                <option value="archived">Archived</option>
               </select>
               <ChevronDown className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 pointer-events-none" />
             </div>
@@ -230,8 +265,31 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Projects Grid/List */}
-        {filteredProjects.length === 0 ? (
+        {/* Loading / Error / Projects */}
+        {projectsQuery.isLoading ? (
+          <div className="flex items-center justify-center py-24">
+            <Spinner size="lg" className="text-primary-600" />
+          </div>
+        ) : projectsQuery.isError ? (
+          <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-red-300 py-16 dark:border-red-900">
+            <AlertTriangle className="h-12 w-12 text-red-400" />
+            <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
+              Failed to load projects
+            </h3>
+            <p className="mt-1 text-gray-500">
+              {projectsQuery.error instanceof Error
+                ? projectsQuery.error.message
+                : 'Something went wrong'}
+            </p>
+            <Button
+              variant="outline"
+              className="mt-6"
+              onClick={() => projectsQuery.refetch()}
+            >
+              Try again
+            </Button>
+          </div>
+        ) : filteredProjects.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 py-16 dark:border-gray-700">
             <Cpu className="h-12 w-12 text-gray-400" />
             <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
@@ -242,7 +300,10 @@ export default function DashboardPage() {
                 ? 'Try adjusting your search'
                 : 'Create your first project to get started'}
             </p>
-            <button className="mt-6 flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700">
+            <button
+              onClick={() => setIsNewProjectOpen(true)}
+              className="mt-6 flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700"
+            >
               <Plus className="h-4 w-4" />
               New Project
             </button>
@@ -273,37 +334,29 @@ export default function DashboardPage() {
                         {project.description}
                       </p>
                     </div>
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        // Open menu
-                      }}
-                      className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800"
-                    >
-                      <MoreHorizontal className="h-5 w-5" />
-                    </button>
+                    {renderProjectMenu(project)}
                   </div>
 
                   <div className="mt-4 flex items-center justify-between">
                     <div className="flex items-center gap-3 text-sm text-gray-500">
                       <span className="flex items-center gap-1">
                         <Layers className="h-4 w-4" />
-                        {project.layers}L
+                        {project.layerCount}L
                       </span>
                       <span>
-                        {project.boardSize.width}×{project.boardSize.height}mm
+                        {project.boardWidth}×{project.boardHeight}mm
                       </span>
                     </div>
                     <span
-                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${getStatusColor(project.status)}`}
+                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[project.status]}`}
                     >
-                      {getStatusLabel(project.status)}
+                      {STATUS_LABELS[project.status]}
                     </span>
                   </div>
 
                   <div className="mt-3 flex items-center gap-1 text-xs text-gray-400">
                     <Clock className="h-3.5 w-3.5" />
-                    Updated {project.updatedAt.toLocaleDateString()}
+                    Updated {new Date(project.updatedAt).toLocaleDateString()}
                   </div>
                 </div>
               </Link>
@@ -336,35 +389,62 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-4 text-sm text-gray-500">
                   <span className="flex items-center gap-1">
                     <Layers className="h-4 w-4" />
-                    {project.layers}L
+                    {project.layerCount}L
                   </span>
                   <span>
-                    {project.boardSize.width}×{project.boardSize.height}mm
+                    {project.boardWidth}×{project.boardHeight}mm
                   </span>
                   <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${getStatusColor(project.status)}`}
+                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[project.status]}`}
                   >
-                    {getStatusLabel(project.status)}
+                    {STATUS_LABELS[project.status]}
                   </span>
                   <span className="text-gray-400">
-                    {project.updatedAt.toLocaleDateString()}
+                    {new Date(project.updatedAt).toLocaleDateString()}
                   </span>
                 </div>
 
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    // Open menu
-                  }}
-                  className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800"
-                >
-                  <MoreHorizontal className="h-5 w-5" />
-                </button>
+                {renderProjectMenu(project)}
               </Link>
             ))}
           </div>
         )}
       </main>
+
+      {/* New Project Modal */}
+      <NewProjectModal
+        isOpen={isNewProjectOpen}
+        onClose={() => setIsNewProjectOpen(false)}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={deleteTarget !== null}
+        onClose={() => setDeleteTarget(null)}
+        title="Delete project"
+        size="sm"
+      >
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          Are you sure you want to delete{' '}
+          <span className="font-medium text-gray-900 dark:text-white">
+            {deleteTarget?.name}
+          </span>
+          ? This will permanently remove the project and all of its design
+          data.
+        </p>
+        <ModalFooter>
+          <Button variant="outline" onClick={() => setDeleteTarget(null)}>
+            Cancel
+          </Button>
+          <Button
+            variant="destructive"
+            isLoading={deleteMutation.isPending}
+            onClick={() => deleteTarget && deleteMutation.mutate(deleteTarget.id)}
+          >
+            Delete
+          </Button>
+        </ModalFooter>
+      </Modal>
     </div>
   );
 }

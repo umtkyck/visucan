@@ -4,13 +4,14 @@
 
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import { db } from '@visucan/database/client';
+import { canUseFeature } from '@visucan/utils';
 import { ApiError } from './error-handler';
-import type { User, SubscriptionTier } from '@visucan/types';
+import type { User, SubscriptionTier, SubscriptionLimits } from '@visucan/types';
 
-// Extend FastifyRequest to include user
-declare module 'fastify' {
-  interface FastifyRequest {
-    user?: User;
+// Type the request.user decoration provided by @fastify/jwt
+declare module '@fastify/jwt' {
+  interface FastifyJWT {
+    user: User;
   }
 }
 
@@ -104,18 +105,16 @@ export function requireFeature(feature: string) {
       throw ApiError.unauthorized();
     }
 
-    const { canUseFeature, SubscriptionLimits } = await import('@visucan/utils');
-
     // Check feature access based on subscription
     // This is a simplified check - expand based on feature names
-    const limits: Record<string, keyof typeof SubscriptionLimits.prototype> = {
+    const limits: Record<string, keyof SubscriptionLimits> = {
       logoPlacement: 'logoPlacement',
       orderTracking: 'orderTracking',
       marketplace: 'marketplace',
     };
 
     const limitKey = limits[feature];
-    if (limitKey && !canUseFeature(request.user.subscription, limitKey as any)) {
+    if (limitKey && !canUseFeature(request.user.subscription, limitKey)) {
       throw ApiError.forbidden(
         `The ${feature} feature requires a Pro or Enterprise subscription`
       );

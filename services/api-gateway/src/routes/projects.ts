@@ -4,6 +4,7 @@
 
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { z } from 'zod';
+import { Prisma } from '@prisma/client';
 import { db } from '@visucan/database/client';
 import { createSuccessResponse, createProjectSchema, getSubscriptionLimits, checkLimit } from '@visucan/utils';
 import { ApiError } from '../middleware/error-handler';
@@ -250,8 +251,8 @@ export async function projectRoutes(fastify: FastifyInstance) {
       await db.blockDiagram.create({
         data: {
           projectId: duplicate.id,
-          blocks: original.blockDiagram.blocks,
-          connections: original.blockDiagram.connections,
+          blocks: original.blockDiagram.blocks as Prisma.InputJsonValue,
+          connections: original.blockDiagram.connections as Prisma.InputJsonValue,
         },
       });
     }
@@ -260,18 +261,18 @@ export async function projectRoutes(fastify: FastifyInstance) {
       await db.schematic.create({
         data: {
           projectId: duplicate.id,
-          data: original.schematic.data,
-          sheets: original.schematic.sheets,
+          data: original.schematic.data as Prisma.InputJsonValue,
+          sheets: original.schematic.sheets as Prisma.InputJsonValue,
         },
       });
     }
 
     if (original.pcbLayout) {
-      await db.pcbLayout.create({
+      await db.pCBLayout.create({
         data: {
           projectId: duplicate.id,
-          data: original.pcbLayout.data,
-          layerStack: original.pcbLayout.layerStack,
+          data: original.pcbLayout.data as Prisma.InputJsonValue,
+          layerStack: original.pcbLayout.layerStack as Prisma.InputJsonValue,
         },
       });
     }

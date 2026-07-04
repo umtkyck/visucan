@@ -46,9 +46,16 @@ visucan/
 │   └── ui/                   # Shared UI components
 ├── services/
 │   └── api-gateway/          # Fastify API server
+├── hardware/                 # Altium PCB design files (local only, not in git)
 └── .github/
     └── workflows/            # CI/CD pipelines
 ```
+
+> **Note:** The `hardware/` folder contains the Altium Designer project for the
+> HW_JARED_UPREV_GEN3_R1 CAN/LIN interface board (~200MB of binary design files,
+> Gerbers, and manufacturing docs). It is intentionally excluded from git.
+> Keep a separate backup of this folder (e.g. cloud storage or Git LFS in a
+> dedicated hardware repo).
 
 ## Getting Started
 

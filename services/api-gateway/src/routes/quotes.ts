@@ -116,9 +116,14 @@ export async function quoteRoutes(fastify: FastifyInstance) {
 
     // TODO: Implement actual PCBWAY API call
     // Mock quote calculation based on specs
-    const specs = confirmation.specifications as any;
+    const specs = confirmation.specifications as {
+      width: number;
+      height: number;
+      layers: number;
+    };
     const area = specs.width * specs.height; // mm²
-    const layerMultiplier = { 1: 1, 2: 1.2, 4: 1.8 }[specs.layers] || 2;
+    const layerMultiplier =
+      ({ 1: 1, 2: 1.2, 4: 1.8 } as Record<number, number>)[specs.layers] || 2;
     const basePrice = (area * 0.005 * layerMultiplier + 5) * body.quantity;
     const unitPrice = basePrice / body.quantity;
 
