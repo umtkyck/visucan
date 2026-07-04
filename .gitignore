@@ -64,3 +64,4 @@ service-account.json
 hardware/
 .vercel
 .env*
+*.ps1
