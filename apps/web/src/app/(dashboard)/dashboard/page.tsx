@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Plus,
@@ -16,10 +17,11 @@ import {
   Sparkles,
   Trash2,
   AlertTriangle,
+  LogOut,
 } from 'lucide-react';
 import type { ProjectStatus } from '@visucan/types';
 import { Modal, ModalFooter, Button, Spinner } from '@visucan/ui';
-import { projectsApi } from '@/lib/api';
+import { authApi, projectsApi } from '@/lib/api';
 import type { ProjectDto } from '@/lib/projects';
 import { NewProjectModal } from '@/components/projects/new-project-modal';
 
@@ -38,6 +40,7 @@ const STATUS_LABELS: Record<ProjectStatus, string> = {
 };
 
 export default function DashboardPage() {
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -140,7 +143,18 @@ export default function DashboardPage() {
               <Plus className="h-4 w-4" />
               New Project
             </button>
-            <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700" />
+            <button
+              onClick={async () => {
+                await authApi.signOut();
+                queryClient.clear();
+                router.push('/');
+              }}
+              title="Sign out"
+              className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+            >
+              <LogOut className="h-4 w-4" />
+              Sign out
+            </button>
           </div>
         </div>
       </header>

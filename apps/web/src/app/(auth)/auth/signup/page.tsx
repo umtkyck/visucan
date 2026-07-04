@@ -48,7 +48,8 @@ export default function SignUpPage() {
         throw new Error(data.error?.message || 'Sign up failed');
       }
 
-      router.push('/auth/verify-email?email=' + encodeURIComponent(email));
+      // Signup sets auth cookies, so the user is already signed in
+      router.push('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {

@@ -90,7 +90,7 @@ const PLANS = [
       'Marketplace selling — 3% fee',
     ],
     cta: 'Contact sales',
-    href: '/contact',
+    href: 'mailto:sales@visucan.io',
     highlighted: false,
   },
 ];
