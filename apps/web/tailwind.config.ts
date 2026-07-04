@@ -84,8 +84,9 @@ const config: Config = {
         info: '#3b82f6',
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
+        sans: ['var(--font-inter)', 'Inter', 'sans-serif'],
+        display: ['var(--font-space-grotesk)', 'Space Grotesk', 'sans-serif'],
+        mono: ['var(--font-jetbrains-mono)', 'JetBrains Mono', 'monospace'],
       },
       animation: {
         'spin-slow': 'spin 3s linear infinite',

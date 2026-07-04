@@ -103,7 +103,7 @@ export default function HomePage() {
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2.5">
             <span className="block h-2 w-2 rounded-full bg-sky-400" />
-            <span className="text-[15px] font-medium tracking-tight">
+            <span className="font-display text-[15px] font-medium tracking-tight">
               VisuCAN
             </span>
           </Link>
@@ -153,7 +153,7 @@ export default function HomePage() {
           <p className="mb-8 text-[13px] font-medium uppercase tracking-[0.25em] text-sky-400/80">
             AI-native PCB design
           </p>
-          <h1 className="text-5xl font-light leading-[1.05] tracking-[-0.03em] sm:text-7xl">
+          <h1 className="font-display text-5xl font-light leading-[1.05] tracking-[-0.03em] sm:text-7xl">
             From idea to
             <br />
             <span className="font-medium text-sky-300">manufactured board.</span>
@@ -194,7 +194,7 @@ export default function HomePage() {
             ['Zero', 'installs required'],
           ].map(([value, label]) => (
             <div key={label} className="px-6 py-10 text-center">
-              <div className="text-2xl font-light tracking-tight text-white">
+              <div className="font-display text-2xl font-light tracking-tight text-white">
                 {value}
               </div>
               <div className="mt-1 text-[12px] uppercase tracking-[0.15em] text-white/35">
@@ -211,7 +211,7 @@ export default function HomePage() {
           <p className="text-[13px] font-medium uppercase tracking-[0.25em] text-sky-400/80">
             Capabilities
           </p>
-          <h2 className="mt-4 text-3xl font-light tracking-[-0.02em] sm:text-4xl">
+          <h2 className="mt-4 font-display text-3xl font-light tracking-[-0.02em] sm:text-4xl">
             The whole workflow,
             <br />
             one surface.
@@ -245,7 +245,7 @@ export default function HomePage() {
             <p className="text-[13px] font-medium uppercase tracking-[0.25em] text-sky-400/80">
               Pricing
             </p>
-            <h2 className="mt-4 text-3xl font-light tracking-[-0.02em] sm:text-4xl">
+            <h2 className="mt-4 font-display text-3xl font-light tracking-[-0.02em] sm:text-4xl">
               Start free. Scale when
               <br />
               the boards do.
@@ -272,7 +272,7 @@ export default function HomePage() {
                 </div>
                 <p className="mt-1 text-[13px] text-white/35">{plan.tagline}</p>
                 <div className="mt-8 flex items-baseline gap-1">
-                  <span className="text-4xl font-light tracking-tight">
+                  <span className="font-display text-4xl font-light tracking-tight">
                     {plan.price}
                   </span>
                   <span className="text-[13px] text-white/35">{plan.period}</span>
@@ -307,7 +307,7 @@ export default function HomePage() {
       {/* CTA */}
       <section className="border-t border-white/[0.06]">
         <div className="mx-auto max-w-6xl px-6 py-32 text-center">
-          <h2 className="mx-auto max-w-2xl text-4xl font-light leading-tight tracking-[-0.02em] sm:text-5xl">
+          <h2 className="mx-auto max-w-2xl font-display text-4xl font-light leading-tight tracking-[-0.02em] sm:text-5xl">
             Your next board is a
             <span className="text-sky-300"> conversation </span>
             away.

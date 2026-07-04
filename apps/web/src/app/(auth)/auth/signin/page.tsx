@@ -47,10 +47,12 @@ export default function SignInPage() {
       <div className="w-full max-w-sm">
         <Link href="/" className="mb-12 flex items-center justify-center gap-2.5">
           <span className="block h-2 w-2 rounded-full bg-sky-400" />
-          <span className="text-[15px] font-medium tracking-tight">VisuCAN</span>
+          <span className="font-display text-[15px] font-medium tracking-tight">
+            VisuCAN
+          </span>
         </Link>
 
-        <h1 className="text-center text-2xl font-light tracking-tight">
+        <h1 className="text-center font-display text-2xl font-light tracking-tight">
           Welcome back
         </h1>
         <p className="mt-2 text-center text-[13px] text-white/40">
