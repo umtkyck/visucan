@@ -95,8 +95,15 @@ export default function TermsPage() {
                 className="text-sky-300 hover:text-sky-200"
               >
                 support@visucan.io
+              </a>{' '}
+              or{' '}
+              <a
+                href="tel:+12246299664"
+                className="text-sky-300 hover:text-sky-200"
+              >
+                +1 (224) 629-9664
               </a>
-              .
+              . Mailing address: 1109 W Bauer Rd, Naperville, IL 60563, US.
             </p>
           </section>
         </div>

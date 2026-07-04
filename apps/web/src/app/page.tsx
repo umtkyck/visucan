@@ -324,33 +324,61 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="border-t border-white/[0.06]">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 py-12 sm:flex-row">
-          <div className="flex items-center gap-2.5">
-            <span className="block h-2 w-2 rounded-full bg-sky-400" />
-            <span className="text-[13px] text-white/50">
-              © {new Date().getFullYear()} VisuCAN
-            </span>
+        <div className="mx-auto max-w-6xl px-6 py-12">
+          <div className="flex flex-col items-center justify-between gap-8 sm:flex-row sm:items-start">
+            <div>
+              <div className="flex items-center gap-2.5">
+                <span className="block h-2 w-2 rounded-full bg-sky-400" />
+                <span className="font-display text-[15px] font-medium tracking-tight">
+                  VisuCAN
+                </span>
+              </div>
+              <div className="mt-4 space-y-1.5 text-center text-[13px] leading-relaxed text-white/35 sm:text-left">
+                <p>
+                  <a
+                    href="tel:+12246299664"
+                    className="transition-colors hover:text-white"
+                  >
+                    +1 (224) 629-9664
+                  </a>
+                </p>
+                <p>
+                  <a
+                    href="mailto:support@visucan.io"
+                    className="transition-colors hover:text-white"
+                  >
+                    support@visucan.io
+                  </a>
+                </p>
+                <p>
+                  1109 W Bauer Rd, Naperville, IL 60563, US
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-8">
+              <Link
+                href="/privacy"
+                className="text-[13px] text-white/35 transition-colors hover:text-white"
+              >
+                Privacy
+              </Link>
+              <Link
+                href="/terms"
+                className="text-[13px] text-white/35 transition-colors hover:text-white"
+              >
+                Terms
+              </Link>
+              <a
+                href="mailto:support@visucan.io"
+                className="text-[13px] text-white/35 transition-colors hover:text-white"
+              >
+                Contact
+              </a>
+            </div>
           </div>
-          <div className="flex items-center gap-8">
-            <Link
-              href="/privacy"
-              className="text-[13px] text-white/35 transition-colors hover:text-white"
-            >
-              Privacy
-            </Link>
-            <Link
-              href="/terms"
-              className="text-[13px] text-white/35 transition-colors hover:text-white"
-            >
-              Terms
-            </Link>
-            <a
-              href="mailto:support@visucan.io"
-              className="text-[13px] text-white/35 transition-colors hover:text-white"
-            >
-              Contact
-            </a>
-          </div>
+          <p className="mt-10 text-center text-[12px] text-white/25 sm:text-left">
+            © {new Date().getFullYear()} VisuCAN. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>
