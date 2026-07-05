@@ -18,12 +18,14 @@ import {
   Trash2,
   AlertTriangle,
   LogOut,
+  Truck,
 } from 'lucide-react';
 import type { ProjectStatus } from '@visucan/types';
 import { Modal, ModalFooter, Button, Spinner } from '@visucan/ui';
 import { authApi, projectsApi } from '@/lib/api';
 import type { ProjectDto } from '@/lib/projects';
 import { NewProjectModal } from '@/components/projects/new-project-modal';
+import { TrackShipmentModal } from '@/components/shipping/track-shipment-modal';
 
 const STATUS_COLORS: Record<ProjectStatus, string> = {
   draft: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
@@ -47,6 +49,7 @@ export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [isNewProjectOpen, setIsNewProjectOpen] = useState(false);
+  const [isTrackShipmentOpen, setIsTrackShipmentOpen] = useState(false);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ProjectDto | null>(null);
 
@@ -209,15 +212,18 @@ export default function DashboardPage() {
               <div className="text-sm text-gray-500">Use a starter template</div>
             </div>
           </button>
-          <button className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-4 text-left transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
+          <button
+            onClick={() => setIsTrackShipmentOpen(true)}
+            className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-4 text-left transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
+          >
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-orange-100 dark:bg-orange-900">
-              <Cpu className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+              <Truck className="h-6 w-6 text-orange-600 dark:text-orange-400" />
             </div>
             <div>
               <div className="font-medium text-gray-900 dark:text-white">
-                Import
+                Track Shipment
               </div>
-              <div className="text-sm text-gray-500">From Altium/KiCad</div>
+              <div className="text-sm text-gray-500">UPS · FedEx · USPS</div>
             </div>
           </button>
         </div>
@@ -429,6 +435,12 @@ export default function DashboardPage() {
       <NewProjectModal
         isOpen={isNewProjectOpen}
         onClose={() => setIsNewProjectOpen(false)}
+      />
+
+      {/* Track Shipment Modal */}
+      <TrackShipmentModal
+        isOpen={isTrackShipmentOpen}
+        onClose={() => setIsTrackShipmentOpen(false)}
       />
 
       {/* Delete Confirmation Modal */}

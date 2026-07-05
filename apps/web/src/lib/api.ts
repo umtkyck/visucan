@@ -232,6 +232,37 @@ export const ordersApi = {
   get: (id: string) => api.get(`/orders/${id}`),
 };
 
+// Shipping (North American carriers: UPS, FedEx, USPS)
+export const shippingApi = {
+  carriers: () =>
+    api.get<{
+      carriers: Array<{ id: string; name: string; country: string; configured: boolean }>;
+    }>('/shipping/carriers'),
+
+  track: (number: string, carrier?: 'ups' | 'fedex' | 'usps') =>
+    api.get<TrackingResultDto>('/shipping/track', { params: { number, carrier } }),
+};
+
+export interface TrackingEventDto {
+  status: string;
+  description: string;
+  location: string | null;
+  timestamp: string;
+}
+
+export interface TrackingResultDto {
+  carrier: 'ups' | 'fedex' | 'usps';
+  carrierName: string;
+  trackingNumber: string;
+  status: string;
+  statusDescription: string;
+  estimatedDelivery: string | null;
+  deliveredAt: string | null;
+  events: TrackingEventDto[];
+  live: boolean;
+  note?: string;
+}
+
 // Marketplace
 export const marketplaceApi = {
   listings: {
