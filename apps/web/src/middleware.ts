@@ -20,6 +20,7 @@ const PUBLIC_PATHS = [
 ];
 
 const PUBLIC_PATH_PREFIXES = [
+  '/api/auth/oauth',
   '/marketplace',
   '/_next',
   '/favicon',

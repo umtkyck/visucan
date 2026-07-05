@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Check } from 'lucide-react';
 import { Logo } from '@/components/brand/logo';
+import { SocialButtons } from '@/components/auth/social-buttons';
 
 const INPUT_CLASSES =
   'w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-white placeholder:text-white/25 transition-colors focus:border-sky-400/60 focus:outline-none';
@@ -181,6 +182,14 @@ export default function SignUpPage() {
             {isLoading ? 'Creating account…' : 'Create account'}
           </button>
         </form>
+
+        <div className="my-6 flex items-center gap-4">
+          <span className="h-px flex-1 bg-white/10" />
+          <span className="text-[11px] uppercase tracking-widest text-white/30">or</span>
+          <span className="h-px flex-1 bg-white/10" />
+        </div>
+
+        <SocialButtons action="Sign up" />
 
         <p className="mt-8 text-center text-[13px] text-white/40">
           Already have an account?{' '}
