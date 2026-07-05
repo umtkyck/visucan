@@ -1,0 +1,25 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "auth": {
+    "providers": {
+      "anonymous": false,
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "VisuCAN",
+        "supportEmail": "umtkyck@gmail.com",
+        "authorizedDomains": [
+          "localhost",
+          "visucan.com",
+          "www.visucan.com",
+          "visucan.vercel.app"
+        ]
+      }
+    }
+  }
+}

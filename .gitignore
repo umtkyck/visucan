@@ -59,6 +59,10 @@ yarn-error.log*
 *.key
 credentials.json
 service-account.json
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
 
 # Hardware design files (Altium project, ~200MB of binaries - kept local only)
 hardware/

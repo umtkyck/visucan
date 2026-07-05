@@ -19,6 +19,8 @@
     "@visucan/utils": "*",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "firebase": "^12.15.0",
+    "firebase-admin": "^14.1.0",
     "framer-motion": "^10.16.16",
     "jose": "^5.2.0",
     "lucide-react": "^0.303.0",

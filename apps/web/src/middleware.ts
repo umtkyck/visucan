@@ -12,6 +12,7 @@ const PUBLIC_PATHS = [
   '/auth/reset-password',
   '/api/auth/signin',
   '/api/auth/signup',
+  '/api/auth/firebase',
   '/api/auth/refresh',
   '/api/auth/forgot-password',
   '/api/auth/reset-password',

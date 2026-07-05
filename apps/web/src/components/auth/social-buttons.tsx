@@ -1,7 +1,12 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { signInAndExchange, type FirebaseSocialProvider } from '@/lib/firebase/auth';
+import { isFirebaseConfigured } from '@/lib/firebase/client';
+
 const BUTTON_CLASSES =
-  'flex w-full items-center justify-center gap-2.5 rounded-full border border-white/10 bg-white/[0.03] py-2.5 text-sm text-white/80 transition-colors hover:border-white/25 hover:text-white';
+  'flex w-full items-center justify-center gap-2.5 rounded-full border border-white/10 bg-white/[0.03] py-2.5 text-sm text-white/80 transition-colors hover:border-white/25 hover:text-white disabled:cursor-not-allowed disabled:opacity-50';
 
 function GoogleIcon() {
   return (
@@ -50,21 +55,61 @@ interface SocialButtonsProps {
   action?: string;
 }
 
+const PROVIDERS: Array<{
+  id: FirebaseSocialProvider;
+  label: string;
+  Icon: () => JSX.Element;
+}> = [
+  { id: 'google', label: 'Google', Icon: GoogleIcon },
+  { id: 'apple', label: 'Apple', Icon: AppleIcon },
+  { id: 'facebook', label: 'Facebook', Icon: FacebookIcon },
+];
+
 export function SocialButtons({ action = 'Continue' }: SocialButtonsProps) {
+  const router = useRouter();
+  const [loading, setLoading] = useState<FirebaseSocialProvider | null>(null);
+  const [error, setError] = useState('');
+  const firebaseEnabled = isFirebaseConfigured();
+
+  const handleClick = async (provider: FirebaseSocialProvider) => {
+    setError('');
+
+    if (!firebaseEnabled) {
+      window.location.href = `/api/auth/oauth/${provider}`;
+      return;
+    }
+
+    setLoading(provider);
+    try {
+      await signInAndExchange(provider);
+      router.push('/dashboard');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Social sign-in failed');
+    } finally {
+      setLoading(null);
+    }
+  };
+
   return (
     <div className="space-y-3">
-      <a href="/api/auth/oauth/google" className={BUTTON_CLASSES}>
-        <GoogleIcon />
-        {action} with Google
-      </a>
-      <a href="/api/auth/oauth/apple" className={BUTTON_CLASSES}>
-        <AppleIcon />
-        {action} with Apple
-      </a>
-      <a href="/api/auth/oauth/facebook" className={BUTTON_CLASSES}>
-        <FacebookIcon />
-        {action} with Facebook
-      </a>
+      {error && (
+        <div className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+          {error}
+        </div>
+      )}
+
+      {PROVIDERS.map(({ id, label, Icon }) => (
+        <button
+          key={id}
+          type="button"
+          disabled={loading !== null}
+          onClick={() => void handleClick(id)}
+          className={BUTTON_CLASSES}
+        >
+          <Icon />
+          {loading === id ? 'Signing in…' : `${action} with ${label}`}
+        </button>
+      ))}
     </div>
   );
 }
@@ -75,6 +120,7 @@ const OAUTH_ERROR_MESSAGES: Record<string, string> = {
   unknown_provider: 'Unknown sign-in provider.',
   oauth_state_mismatch: 'Sign-in session expired. Please try again.',
   oauth_failed: 'Social sign-in failed. Please try again or use email and password.',
+  firebase_failed: 'Firebase sign-in failed. Please try again.',
 };
 
 export function getOAuthErrorMessage(code: string | null): string | null {

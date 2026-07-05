@@ -31,6 +31,10 @@
     "db:migrate": "turbo run db:migrate",
     "db:push": "turbo run db:push",
     "db:studio": "turbo run db:studio",
+    "firebase:login": "npx -y firebase-tools@latest login",
+    "firebase:deploy:auth": "npx -y firebase-tools@latest deploy --only auth",
+    "firebase:deploy:rules": "npx -y firebase-tools@latest deploy --only firestore:rules,storage",
+    "firebase:deploy": "npx -y firebase-tools@latest deploy --only auth,firestore:rules,storage",
     "prepare": "node -e \"if (process.env.VERCEL || process.env.CI) process.exit(0); require('child_process').execSync('husky install', {stdio: 'inherit'})\""
   },
   "devDependencies": {
