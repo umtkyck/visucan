@@ -32,6 +32,7 @@
     "db:push": "turbo run db:push",
     "db:studio": "turbo run db:studio",
     "firebase:login": "npx -y firebase-tools@latest login",
+    "firebase:setup": "node scripts/firebase-setup.mjs",
     "firebase:deploy:auth": "npx -y firebase-tools@latest deploy --only auth",
     "firebase:deploy:rules": "npx -y firebase-tools@latest deploy --only firestore:rules,storage",
     "firebase:deploy": "npx -y firebase-tools@latest deploy --only auth,firestore:rules,storage",
