@@ -26,6 +26,7 @@ import { authApi, projectsApi } from '@/lib/api';
 import type { ProjectDto } from '@/lib/projects';
 import { NewProjectModal } from '@/components/projects/new-project-modal';
 import { TrackShipmentModal } from '@/components/shipping/track-shipment-modal';
+import { LogoMark } from '@/components/brand/logo';
 
 const STATUS_COLORS: Record<ProjectStatus, string> = {
   draft: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
@@ -130,9 +131,7 @@ export default function DashboardPage() {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600">
-                <Cpu className="h-5 w-5 text-white" />
-              </div>
+              <LogoMark className="h-7 w-7 text-sky-500" />
               <span className="text-xl font-bold text-gray-900 dark:text-white">
                 VisuCAN
               </span>

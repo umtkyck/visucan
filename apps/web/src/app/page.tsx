@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { HeroCanvas } from '@/components/landing/hero-canvas';
+import { Logo } from '@/components/brand/logo';
 
 const FEATURES = [
   {
@@ -101,11 +102,8 @@ export default function HomePage() {
       {/* Navigation */}
       <nav className="fixed top-0 z-50 w-full border-b border-white/[0.06] bg-[#05070b]/70 backdrop-blur-xl">
         <div className="mx-auto flex h-24 max-w-6xl items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-3">
-            <span className="block h-3 w-3 rounded-full bg-sky-400" />
-            <span className="font-display text-2xl font-medium tracking-tight">
-              VisuCAN
-            </span>
+          <Link href="/" className="flex items-center">
+            <Logo />
           </Link>
           <div className="hidden items-center gap-12 md:flex">
             <Link
@@ -327,11 +325,8 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-6 py-20">
           <div className="flex flex-col items-center justify-between gap-12 sm:flex-row sm:items-start">
             <div>
-              <div className="flex items-center justify-center gap-3 sm:justify-start">
-                <span className="block h-3 w-3 rounded-full bg-sky-400" />
-                <span className="font-display text-2xl font-medium tracking-tight">
-                  VisuCAN
-                </span>
+              <div className="flex items-center justify-center sm:justify-start">
+                <Logo />
               </div>
               <div className="mt-6 space-y-2.5 text-center text-[15px] leading-relaxed text-white/40 sm:text-left">
                 <p>

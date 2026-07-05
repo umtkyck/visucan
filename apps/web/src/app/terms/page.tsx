@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Logo } from '@/components/brand/logo';
 
 export const metadata = {
   title: 'Terms of Service',
@@ -8,11 +9,11 @@ export default function TermsPage() {
   return (
     <div className="min-h-screen bg-[#05070b] text-white">
       <div className="mx-auto max-w-2xl px-6 py-24">
-        <Link href="/" className="mb-16 flex items-center gap-2.5">
-          <span className="block h-2 w-2 rounded-full bg-sky-400" />
-          <span className="font-display text-[15px] font-medium tracking-tight">
-            VisuCAN
-          </span>
+        <Link href="/" className="mb-16 flex items-center">
+          <Logo
+            markClassName="h-6 w-6"
+            textClassName="font-display text-lg font-medium tracking-tight"
+          />
         </Link>
 
         <h1 className="font-display text-3xl font-light tracking-tight">

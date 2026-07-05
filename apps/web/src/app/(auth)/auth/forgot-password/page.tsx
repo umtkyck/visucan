@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { Logo } from '@/components/brand/logo';
 
 const INPUT_CLASSES =
   'w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm text-white placeholder:text-white/25 transition-colors focus:border-sky-400/60 focus:outline-none';
@@ -45,11 +46,11 @@ export default function ForgotPasswordPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#05070b] px-4 text-white">
       <div className="w-full max-w-sm">
-        <Link href="/" className="mb-12 flex items-center justify-center gap-2.5">
-          <span className="block h-2 w-2 rounded-full bg-sky-400" />
-          <span className="font-display text-[15px] font-medium tracking-tight">
-            VisuCAN
-          </span>
+        <Link href="/" className="mb-12 flex items-center justify-center">
+          <Logo
+            markClassName="h-6 w-6"
+            textClassName="font-display text-lg font-medium tracking-tight"
+          />
         </Link>
 
         <h1 className="text-center font-display text-2xl font-light tracking-tight">

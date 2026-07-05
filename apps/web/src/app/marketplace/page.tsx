@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { Logo } from '@/components/brand/logo';
 
 export const metadata = {
   title: 'Marketplace',
@@ -8,11 +9,11 @@ export const metadata = {
 export default function MarketplacePage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#05070b] px-6 text-center text-white">
-      <Link href="/" className="mb-12 flex items-center gap-2.5">
-        <span className="block h-2 w-2 rounded-full bg-sky-400" />
-        <span className="font-display text-[15px] font-medium tracking-tight">
-          VisuCAN
-        </span>
+      <Link href="/" className="mb-12 flex items-center">
+        <Logo
+          markClassName="h-6 w-6"
+          textClassName="font-display text-lg font-medium tracking-tight"
+        />
       </Link>
 
       <p className="text-[13px] font-medium uppercase tracking-[0.25em] text-sky-400/80">
