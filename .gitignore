@@ -69,3 +69,4 @@ hardware/
 .vercel
 .env*
 *.ps1
+.firebase-login-state.json
