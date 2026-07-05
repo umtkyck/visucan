@@ -103,10 +103,10 @@ export default function BillingPage() {
         <p className="mt-6 text-sm text-gray-500">
           Questions about an invoice? Contact{' '}
           <a
-            href="mailto:support@visucan.io"
+            href="mailto:umtkyck@gmail.com"
             className="text-primary-600 hover:text-primary-700 dark:text-primary-400"
           >
-            support@visucan.io
+            umtkyck@gmail.com
           </a>{' '}
           or call{' '}
           <a

@@ -91,7 +91,7 @@ const PLANS = [
       'Marketplace selling — 3% fee',
     ],
     cta: 'Contact sales',
-    href: 'mailto:sales@visucan.io',
+    href: 'mailto:umtkyck@gmail.com',
     highlighted: false,
   },
 ];
@@ -339,10 +339,10 @@ export default function HomePage() {
                 </p>
                 <p>
                   <a
-                    href="mailto:support@visucan.io"
+                    href="mailto:umtkyck@gmail.com"
                     className="transition-colors hover:text-white"
                   >
-                    support@visucan.io
+                    umtkyck@gmail.com
                   </a>
                 </p>
                 <p>
@@ -364,7 +364,7 @@ export default function HomePage() {
                 Terms
               </Link>
               <a
-                href="mailto:support@visucan.io"
+                href="mailto:umtkyck@gmail.com"
                 className="text-[15px] text-white/40 transition-colors hover:text-white"
               >
                 Contact

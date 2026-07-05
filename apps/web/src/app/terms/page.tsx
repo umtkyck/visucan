@@ -96,10 +96,10 @@ export default function TermsPage() {
             <p>
               Questions about these terms:{' '}
               <a
-                href="mailto:support@visucan.io"
+                href="mailto:umtkyck@gmail.com"
                 className="text-sky-300 hover:text-sky-200"
               >
-                support@visucan.io
+                umtkyck@gmail.com
               </a>{' '}
               or{' '}
               <a
