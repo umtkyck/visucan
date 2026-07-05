@@ -139,6 +139,12 @@ export default function DashboardPage() {
             </Link>
           </div>
           <div className="flex items-center gap-4">
+            <Link
+              href="/billing"
+              className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+            >
+              Billing
+            </Link>
             <button
               onClick={() => setIsNewProjectOpen(true)}
               className="flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700"

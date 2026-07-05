@@ -377,7 +377,8 @@ export default function HomePage() {
             </div>
           </div>
           <p className="mt-14 text-center text-[13px] text-white/25 sm:text-left">
-            © {new Date().getFullYear()} VisuCAN. All rights reserved.
+            © {new Date().getFullYear()} Melis Electronics LLC. VisuCAN is a
+            Melis Electronics product. All rights reserved.
           </p>
         </div>
       </footer>

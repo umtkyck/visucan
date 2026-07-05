@@ -77,8 +77,12 @@ export default function TermsPage() {
               Billing
             </h2>
             <p>
-              Paid plans renew monthly until cancelled. You can cancel at any
-              time and keep access until the end of the billing period.
+              VisuCAN is operated by Melis Electronics LLC, and all invoices are
+              payable to Melis Electronics LLC. Payments are accepted by card
+              and by bank transfer (ACH or wire — remittance details are shown
+              on your invoice and in the billing section of your account). Paid
+              plans renew monthly until cancelled. You can cancel at any time
+              and keep access until the end of the billing period.
               Manufacturing orders placed through partner fabs are subject to
               the partner&apos;s own terms.
             </p>
